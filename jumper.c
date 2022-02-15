@@ -1,10 +1,15 @@
 #include <stdio.h>
+#include <math.h>
+#include<stdlib.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_image.h>
 
 #define WINDOW_WIDTH 680
 #define WINDOW_HEIGHT 400
+#define MOVE_SPEED 4 //Move speed of all move.
+#define JUMP_DISTANCE 125
+#define MIN_VELOCITY -60
 
 SDL_Window *window;
 SDL_Renderer *renderer;
@@ -13,119 +18,128 @@ SDL_Texture *texture;
 SDL_Rect srcImg;
 SDL_Rect standImg;
 SDL_Rect jumpImg;
+SDL_Rect imgPtr;//image pointer.
 
 
 int track;
 
 void initialize();
 void createWindowRendrer(int width, int height);
+void getInput(int *, int *, int *, int *);
 void gameplay(void);
-void quitAll();
+void closeAll();
 
 int main(){
     initialize();
     createWindowRendrer(WINDOW_WIDTH, WINDOW_HEIGHT);
     gameplay();
-    quitAll();
+    closeAll();
     return 0;
 }
 
+void getInput(int *left, int *right, int *up, int *closeReq){
+    SDL_Event event;
+    while(SDL_PollEvent(&event)){
+        switch(event.type){
+        case SDL_QUIT:
+            *closeReq = 1;
+            break;
+        case SDL_KEYDOWN:
+            switch(event.key.keysym.scancode){
+            case SDL_SCANCODE_UP:
+                *up = 1;
+                break;
+            case SDL_SCANCODE_LEFT:
+                *left = 1;
+                break;
+            case SDL_SCANCODE_RIGHT:
+                *right = 1;
+                break;
+            }
+            break;
+        /* case SDL_KEYUP:
+            switch(event.key.keysym.scancode){
+            case SDL_SCANCODE_UP:
+                up = 0;
+                break;
+            case SDL_SCANCODE_DOWN:
+                down = 0;
+                break;
+            case SDL_SCANCODE_LEFT:
+                left = 0;
+                break;
+            case SDL_SCANCODE_RIGHT:
+                right = 0;
+                break;
+            }
+        break; */
+        }
+    }
+    return;
+}
+
 void gameplay(void){
-    int speed = 10;
-    int distance = 0;
 
     surface = IMG_Load("gfx/jumper.png");
     if(!surface){
         printf("no surface created");
-        quitAll();
+        closeAll();
     }
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
     if(!texture){
         printf("no texture created\n");
-        quitAll();
+        closeAll();
     }
-
     SDL_QueryTexture(texture, NULL, NULL, &srcImg.w, &srcImg.h);
-    int closeReq = 0;
 
-    srcImg.h /= 3;
-    srcImg.w /= 4.5;
+    srcImg.h /= 2;
+    srcImg.w /= 4;
     standImg.h = 64;
     standImg.w = 54;
     standImg.x = 0;
     standImg.y = 0;
+    jumpImg.h = 64;
+    jumpImg.w = 54;
+    jumpImg.x = 64;
+    jumpImg.y = 0;
 
-    int xpos = (WINDOW_WIDTH - srcImg.w);
-    int ypos = (WINDOW_HEIGHT - srcImg.h);
-    srcImg.x = xpos;
-    srcImg.y = ypos;
-    int up = 0, down = 0, left = 0, right = 0;
+    float x_pos = 20;
+    float y_pos = (WINDOW_HEIGHT - srcImg.h);
+
+    srcImg.x = x_pos;
+    srcImg.y = y_pos;
+
+    int up = 0, down = 0, left = 0, right = 0, closeReq = 0;
+    float speed = 9, jumpHeight = JUMP_DISTANCE;
+
     while(!closeReq){
-        SDL_Event event;
-        while(SDL_PollEvent(&event)){
-            switch(event.type){
-            case SDL_QUIT:
-                closeReq = 1;
-                break;
-            case SDL_KEYDOWN:
-                switch(event.key.keysym.scancode){
-                case SDL_SCANCODE_UP:
-                    up = 1;
-                    break;
-                case SDL_SCANCODE_DOWN:
-                    down = 1;
-                    break;
-                case SDL_SCANCODE_LEFT:
-                    left = 1;
-                    break;
-                case SDL_SCANCODE_RIGHT:
-                    right = 1;
-                    break;
-                }
-                break;
-            /* case SDL_KEYUP:
-                switch(event.key.keysym.scancode){
-                case SDL_SCANCODE_UP:
-                    up = 0;
-                    break;
-                case SDL_SCANCODE_DOWN:
-                    down = 0;
-                    break;
-                case SDL_SCANCODE_LEFT:
-                    left = 0;
-                    break;
-                case SDL_SCANCODE_RIGHT:
-                    right = 0;
-                    break;
-                }
-            break; */
+        imgPtr = standImg;
+        getInput(&left, &right, &up, &closeReq);
+
+        if(up == 1 && y_pos - speed < WINDOW_HEIGHT - srcImg.h - 5){
+            imgPtr = jumpImg;
+            if(jumpHeight <= 0 && jumpHeight >= -8){
+                speed = -(speed + 3);
             }
-        }
-        if(up == 1 && down == 0 && distance < 70){
-            srcImg.y -= speed;
-            distance += 10;
-        } else if(up == 1 && distance > 0){
-            srcImg.y += speed;
-            distance -= 10;
-            down = 1;
+            y_pos -= speed;
+            jumpHeight -= abs(speed);
         } else{
             up = 0;
-            down = 0;
+            speed = 8;
+            jumpHeight = JUMP_DISTANCE;
         }
-        if(left == 1){
-            srcImg.x -= speed;
-            left = 0;
-        }
+        srcImg.x = (int)x_pos;
+        srcImg.y = (int)y_pos;
         SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, texture, &standImg, &srcImg);
+        SDL_RenderCopy(renderer, texture, &imgPtr, &srcImg);
         SDL_RenderPresent(renderer);
-        SDL_Delay(1000 / 70);
+        SDL_Delay(1000 / 60);
     }
     return;
 }
 
-void quitAll(){
+void closeAll(){
     SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
