@@ -1,0 +1,5 @@
+Commits:            CommitNotes
+
+
+jumpednice: nice jump implemented.
+verynicejump: Extra nice jump.(with increasing fall speed).
