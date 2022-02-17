@@ -3,3 +3,5 @@ Commits:            CommitNotes
 
 jumpednice: nice jump implemented.
 verynicejump: Extra nice jump.(with increasing fall speed).
+veryveryfinesmoothjump: Extra smooth movements.
+codecleanup1: some code cleanup(addition of structure).
