@@ -161,14 +161,12 @@ void gameplay(void){
         if(right == 1){
             if(!up){
                 speed = 5;
-                right = 0;
             }
             x_pos += x_speed * (x_pos + x_speed < WINDOW_WIDTH - srcImg.w);
         }
         if(left == 1){
             if(!up){
                 speed = 6;
-                left = 0;
             }
             x_pos -= x_speed * (x_pos - x_speed > srcImg.w - 40);
         }
