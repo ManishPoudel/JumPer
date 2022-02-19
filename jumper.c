@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <math.h>
-#include<stdlib.h>
+#include <stdlib.h>
 #include <time.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_timer.h>
@@ -9,67 +9,77 @@
 #define WINDOW_WIDTH 680
 #define WINDOW_HEIGHT 400
 #define JUMP_DISTANCE 140
+#define JUMPER_WIDTH    54
+#define JUMPER_HEIGHT   64
 
+//Main Character which jumps.
 struct Jumper{
-    int x_pos;
+    int x_pos;  // Positions of jumper.
     int y_pos;
-    int speed;
-    int jumpHeight;
-    int up, left, right;
+    int speed;  // Speed of jumper Movements.
+    int jumpHeight; //Height up to which jumper jumps,
+    int up, left, right, down;    //Control direction of jumper.
 };
-
 
 SDL_Window *window;
 SDL_Renderer *renderer;
 SDL_Surface *surface;
-SDL_Surface *surface2;
+SDL_Surface *tileSurface;
 SDL_Texture *texture;
-SDL_Texture *texture2;
-SDL_Rect tileImg[5];
+SDL_Texture *tileTexture;
+SDL_Rect tileImg[6];
 SDL_Rect srcImg;
 SDL_Rect standImg;
 SDL_Rect jumpImg;
-SDL_Rect imgPtr;//image pointer.
+SDL_Rect imgPtr;//Image pointer(figuratively).
 
-int track = 0; //for error detection.
+int track = 0; //For error detection.
 int closeReq = 0;
+int attached = 0;
+
 void initialize();
-void createWindowRendrer(int width, int height);
+void createWindowRenderer(int width, int height);
 void setImgVariables();
 int getRandInt();
-void getInput(int *, int *, int *);
+void getInput(int *, int *, int *, int *);
 void freeSurface();
 void setTilesPos();
 void queryTexture();
 void createSurfaceAndTexture();
 void renderFunc();
+int attachTilestoJumper(struct Jumper *jumper);
 void controlMovement(struct Jumper *);
-void gameplay(void);
+void moveTiles();
+void gamePlay(void);
 void closeAll();
 
 
 int main(){
     initialize();
-    createWindowRendrer(WINDOW_WIDTH, WINDOW_HEIGHT);
-    gameplay();
+    createWindowRenderer(WINDOW_WIDTH, WINDOW_HEIGHT);
+    gamePlay();
     closeAll();
     return 0;
 }
 
 //Main game play loop is this.
-void gameplay(void){
+void gamePlay(void){
     createSurfaceAndTexture();
     queryTexture();
     setImgVariables();
     setTilesPos();
 
-    int x_pos = tileImg[0].x + 10;
-    int y_pos = tileImg[0].y - srcImg.h;
+    int x_pos = tileImg[1].x + 10;
+    int y_pos = tileImg[1].y - srcImg.h;
     srcImg.x = x_pos;
     srcImg.y = y_pos;
-    struct Jumper jumper = { x_pos,y_pos,6,JUMP_DISTANCE,0,0,0 };
+
+    //Our Character.
+    struct Jumper jumper = { x_pos,y_pos,6,JUMP_DISTANCE,0,0,0,0 };
     while(!closeReq){
         imgPtr = standImg;
+        moveTiles();
+        attachTilestoJumper(&jumper);
         controlMovement(&jumper);
         renderFunc();
         SDL_Delay(1000 / 70);
@@ -77,13 +87,39 @@ void gameplay(void){
     return;
 }
 
+int attachTilestoJumper(struct Jumper *jumper){
+    for(int i = 0;i < 6;i++){
+        if(jumper->x_pos + JUMPER_WIDTH >= tileImg[i].x + 2 &&
+            jumper->x_pos <= tileImg[i].x + 62 &&
+            jumper->y_pos + JUMPER_HEIGHT >= tileImg[i].y - 5 &&
+            jumper->y_pos + JUMPER_HEIGHT <= tileImg[i].y){
+            jumper->y_pos = tileImg[i].y - srcImg.h;
+            jumper->down = 1;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void moveTiles(){
+    for(int i = 0;i < 6;i++){
+        tileImg[i].y += 1;
+        tileImg[i].y %= 400;
+        if(tileImg[i].y > WINDOW_HEIGHT + 16){
+            tileImg[i].x = getRandInt();
+        }
+    }
+    return;
+}
+
 void controlMovement(struct Jumper *jumper){
     int  x_speed = abs(jumper->speed);
-    getInput(&jumper->left, &jumper->right, &jumper->up);
+    getInput(&jumper->left, &jumper->right, &jumper->up, &jumper->down);
 
-    if(jumper->up == 1 && jumper->y_pos - jumper->speed <= WINDOW_HEIGHT - srcImg.h){
+    if(jumper->up == 1 && jumper->y_pos - jumper->speed <= WINDOW_HEIGHT - srcImg.h
+        && !jumper->down){
         imgPtr = jumpImg;
-        if(jumper->jumpHeight <= 0 && jumper->jumpHeight >= -6){
+        if(jumper->jumpHeight <= 0 && jumper->jumpHeight >= -8){
             jumper->speed = -(jumper->speed + 3);
         }
         jumper->y_pos -= jumper->speed;
@@ -94,23 +130,25 @@ void controlMovement(struct Jumper *jumper){
         jumper->jumpHeight = JUMP_DISTANCE;
     }
     if(jumper->right == 1){
-        if(!jumper->up){
+        /* if(!jumper->up){ //If you want unique x speed.
             jumper->speed = 5;
-        }
-        jumper->x_pos += x_speed * (jumper->x_pos + x_speed < WINDOW_WIDTH - srcImg.w);
+        } */
+        jumper->x_pos += x_speed *
+            (jumper->x_pos + x_speed < WINDOW_WIDTH - srcImg.w) - 1;
     }
     if(jumper->left == 1){
-        if(!jumper->up){
+        /* if(!jumper->up){
             jumper->speed = 6;
-        }
-        jumper->x_pos -= x_speed * (jumper->x_pos - x_speed > srcImg.w - 38);
+        } */
+        jumper->x_pos -= x_speed *
+            (jumper->x_pos - x_speed > srcImg.w - 38) - 1;
     }
     srcImg.x = jumper->x_pos;
     srcImg.y = jumper->y_pos;
     return;
 }
 
-void getInput(int *left, int *right, int *up){
+void getInput(int *left, int *right, int *up, int *down){
     SDL_Event event;
     while(SDL_PollEvent(&event)){
         switch(event.type){
@@ -121,6 +159,7 @@ void getInput(int *left, int *right, int *up){
             switch(event.key.keysym.scancode){
             case SDL_SCANCODE_UP:
                 *up = 1;
+                *down = 0;
                 break;
             case SDL_SCANCODE_LEFT:
                 *left = 1;
@@ -131,7 +170,7 @@ void getInput(int *left, int *right, int *up){
             }
             break;
         case SDL_KEYUP:
-            // To detect the leaving of left right keys (Must do).
+            // To detect the leaving of left right keys (must do).
             switch(event.key.keysym.scancode){
             case SDL_SCANCODE_LEFT:
                 *left = 0;
@@ -143,6 +182,51 @@ void getInput(int *left, int *right, int *up){
             break;
         }
     }
+    return;
+}
+
+void renderFunc(){
+    SDL_RenderClear(renderer);
+    for(int i = 0;i < 6;i++){
+        SDL_RenderCopy(renderer, tileTexture, NULL, &tileImg[i]);
+    }
+    SDL_RenderCopy(renderer, texture, &imgPtr, &srcImg);
+    SDL_RenderPresent(renderer);
+    return;
+}
+
+int getRandInt(){   //Returns random for y position of tile.
+    return rand() % 616;
+}
+
+void freeSurface(){
+    SDL_FreeSurface(surface);
+    SDL_FreeSurface(tileSurface);
+    return;
+}
+
+void createSurfaceAndTexture(){
+    surface = IMG_Load("gfx/jumper.png");
+    tileSurface = IMG_Load("gfx/obstacle2.png");
+    if(!surface && !tileSurface){
+        printf("Not able to create surface: %d", track++);
+        closeAll();
+    }
+    texture = SDL_CreateTextureFromSurface(renderer, surface);
+    tileTexture = SDL_CreateTextureFromSurface(renderer, tileSurface);
+    freeSurface();
+    if(!texture && !tileTexture){
+        printf("Not able to create texture: %d\n", track++);
+        closeAll();
+    }
+    return;
+}
+
+void queryTexture(){
+    for(int i = 0;i < 6;i++){
+        SDL_QueryTexture(tileTexture, NULL, NULL, &tileImg[i].w, &tileImg[i].h);
+    }
+    SDL_QueryTexture(texture, NULL, NULL, &srcImg.w, &srcImg.h);
     return;
 }
 
@@ -160,69 +244,24 @@ void setImgVariables(){
     return;
 }
 
-void renderFunc(){
-    SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, texture2, NULL, &tileImg[0]);
-    SDL_RenderCopy(renderer, texture2, NULL, &tileImg[1]);
-    SDL_RenderCopy(renderer, texture, &imgPtr, &srcImg);
-    SDL_RenderPresent(renderer);
-    return;
-}
-
-int getRandInt(){   //Returns random for y position of tile.
-    return rand() % 616;
-}
-
-void freeSurface(){
-    SDL_FreeSurface(surface);
-    SDL_FreeSurface(surface2);
-    return;
-}
-
-void createSurfaceAndTexture(){
-    surface = IMG_Load("gfx/jumper.png");
-    surface2 = IMG_Load("gfx/obstacle2.png");
-    if(!surface && !surface2){
-        printf("Not able to create surface: %d", track++);
-        closeAll();
-    }
-    texture = SDL_CreateTextureFromSurface(renderer, surface);
-    texture2 = SDL_CreateTextureFromSurface(renderer, surface2);
-    freeSurface();
-    if(!texture && !texture2){
-        printf("Not able to create texture: %d\n", track++);
-        closeAll();
-    }
-    return;
-}
-
-void queryTexture(){
-    SDL_QueryTexture(texture2, NULL, NULL, &tileImg[0].w, &tileImg[0].h);
-    SDL_QueryTexture(texture2, NULL, NULL, &tileImg[1].w, &tileImg[1].h);
-    SDL_QueryTexture(texture, NULL, NULL, &srcImg.w, &srcImg.h);
-    return;
-}
-
 void setTilesPos(){
-    tileImg[0].x = getRandInt();
-    tileImg[0].y = 300;
-    tileImg[1].x = getRandInt();
-    tileImg[1].y = 45;
+    for(int i = 0;i < 5;i++){
+        tileImg[i].x = getRandInt();
+        tileImg[i].y = (i + 1) * 70;
+    }
     return;
 }
-
-
 
 void closeAll(){
     SDL_DestroyTexture(texture);
-    SDL_DestroyTexture(texture2);
+    SDL_DestroyTexture(tileTexture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
     return;
 }
 
-void createWindowRendrer(int width, int height){
+void createWindowRenderer(int width, int height){
     window = SDL_CreateWindow("JuMpeR", SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         width, height, SDL_WINDOW_SHOWN);
@@ -249,3 +288,5 @@ void initialize(){
     srand((unsigned)time(NULL));
     return;
 }
+
+//  THATS ALL.  THANK YOU!! :-D

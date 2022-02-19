@@ -4,6 +4,7 @@
         "stdio.h": "c",
         "unistd.h": "c",
         "limits": "c",
-        "*.tcc": "c"
+        "*.tcc": "c",
+        "sdl.h": "c"
     }
 }
