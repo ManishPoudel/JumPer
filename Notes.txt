@@ -6,3 +6,4 @@ verynicejump: Extra nice jump.(with increasing fall speed).
 veryveryfinesmoothjump: Extra smooth movements.
 codecleanup1: some code cleanup(addition of structure).
 crude jump: a very crude jump algorithm (basic jump).
+crudejump(need to abondon): a crude jump which i need to abondon.

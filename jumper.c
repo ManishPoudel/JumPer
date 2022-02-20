@@ -17,7 +17,7 @@ struct Jumper{
     int x_pos;  // Positions of jumper.
     int y_pos;
     int speed;  // Speed of jumper Movements.
-    int jumpHeight; //Height up to which jumper jumps,
+    int jumpHeight; //Height up to which jumper jumps.
     int up, left, right, down;    //Control direction of jumper.
 };
 
@@ -31,9 +31,9 @@ SDL_Rect tileImg[6];
 SDL_Rect srcImg;
 SDL_Rect standImg;
 SDL_Rect jumpImg;
-SDL_Rect imgPtr;//Image pointer(figuratively).
+SDL_Rect imgPtr;    //Image pointer(figuratively).
 
-int track = 0; //For error detection.
+int track = 0;  //For error detection.
 int closeReq = 0;
 int attached = 0;
 
@@ -47,7 +47,7 @@ void setTilesPos();
 void queryTexture();
 void createSurfaceAndTexture();
 void renderFunc();
-int attachTilestoJumper(struct Jumper *jumper);
+int attachJumperToTiles(struct Jumper *jumper);
 void controlMovement(struct Jumper *);
 void moveTiles();
 void gamePlay(void);
@@ -70,7 +70,7 @@ void gamePlay(void){
     setTilesPos();
 
     int x_pos = tileImg[1].x + 10;
-    int y_pos = tileImg[1].y - srcImg.h;
+    int y_pos = tileImg[1].y;   //-srcImg.h;
     srcImg.x = x_pos;
     srcImg.y = y_pos;
 
@@ -79,21 +79,21 @@ void gamePlay(void){
     while(!closeReq){
         imgPtr = standImg;
         moveTiles();
-        attachTilestoJumper(&jumper);
+        attachJumperToTiles(&jumper);
         controlMovement(&jumper);
         renderFunc();
-        SDL_Delay(1000 / 70);
+        SDL_Delay(1000 / 60);
     }
     return;
 }
 
-int attachTilestoJumper(struct Jumper *jumper){
+int attachJumperToTiles(struct Jumper *jumper){
     for(int i = 0;i < 6;i++){
         if(jumper->x_pos + JUMPER_WIDTH >= tileImg[i].x + 2 &&
-            jumper->x_pos <= tileImg[i].x + 62 &&
-            jumper->y_pos + JUMPER_HEIGHT >= tileImg[i].y - 5 &&
-            jumper->y_pos + JUMPER_HEIGHT <= tileImg[i].y){
-            jumper->y_pos = tileImg[i].y - srcImg.h;
+            jumper->x_pos <= (tileImg[i].x + 62) &&
+            (jumper->y_pos + JUMPER_HEIGHT) >= (tileImg[i].y - 3) &&
+            (jumper->y_pos + JUMPER_HEIGHT) < tileImg[i].y){
+            jumper->y_pos += 1;
             jumper->down = 1;
             return 1;
         }
@@ -103,8 +103,7 @@ int attachTilestoJumper(struct Jumper *jumper){
 
 void moveTiles(){
     for(int i = 0;i < 6;i++){
-        tileImg[i].y += 1;
-        tileImg[i].y %= 400;
+        tileImg[i].y = (tileImg[i].y + 1) % 400;
         if(tileImg[i].y > WINDOW_HEIGHT + 16){
             tileImg[i].x = getRandInt();
         }
@@ -112,11 +111,12 @@ void moveTiles(){
     return;
 }
 
+
 void controlMovement(struct Jumper *jumper){
     int  x_speed = abs(jumper->speed);
     getInput(&jumper->left, &jumper->right, &jumper->up, &jumper->down);
 
-    if(jumper->up == 1 && jumper->y_pos - jumper->speed <= WINDOW_HEIGHT - srcImg.h
+    if((jumper->up == 1 && jumper->y_pos - jumper->speed <= WINDOW_HEIGHT - srcImg.h)
         && !jumper->down){
         imgPtr = jumpImg;
         if(jumper->jumpHeight <= 0 && jumper->jumpHeight >= -8){
@@ -195,7 +195,7 @@ void renderFunc(){
     return;
 }
 
-int getRandInt(){   //Returns random for y position of tile.
+int getRandInt(){   //Returns random for X position of tile.
     return rand() % 616;
 }
 
