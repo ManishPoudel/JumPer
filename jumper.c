@@ -10,7 +10,8 @@
 #define WINDOW_HEIGHT 400
 #define JUMP_DISTANCE 140
 #define JUMPER_WIDTH    54
-#define JUMPER_HEIGHT   64
+ //Since scaled down in setImgVariable()(srcImg.h/=2).
+#define JUMPER_HEIGHT   32
 
 //Main Character which jumps.
 struct Jumper{
@@ -35,7 +36,7 @@ SDL_Rect imgPtr;    //Image pointer(figuratively).
 
 int track = 0;  //For error detection.
 int closeReq = 0;
-int attached = 0;
+int out = 0;    //If player is out 1.
 
 void initialize();
 void createWindowRenderer(int width, int height);
@@ -70,7 +71,7 @@ void gamePlay(void){
     setTilesPos();
 
     int x_pos = tileImg[1].x + 10;
-    int y_pos = tileImg[1].y;   //-srcImg.h;
+    int y_pos = tileImg[1].y - srcImg.h;
     srcImg.x = x_pos;
     srcImg.y = y_pos;
 
@@ -78,6 +79,8 @@ void gamePlay(void){
     struct Jumper jumper = { x_pos,y_pos,6,JUMP_DISTANCE,0,0,0,0 };
     while(!closeReq){
         imgPtr = standImg;
+        out = jumper.y_pos >= WINDOW_HEIGHT - srcImg.h;
+        closeReq = out; //Remove when exit screen is ready.
         moveTiles();
         attachJumperToTiles(&jumper);
         controlMovement(&jumper);
@@ -91,14 +94,15 @@ int attachJumperToTiles(struct Jumper *jumper){
     for(int i = 0;i < 6;i++){
         if(jumper->x_pos + JUMPER_WIDTH >= tileImg[i].x + 2 &&
             jumper->x_pos <= (tileImg[i].x + 62) &&
-            (jumper->y_pos + JUMPER_HEIGHT) >= (tileImg[i].y - 3) &&
+            (jumper->y_pos + JUMPER_HEIGHT) >= (tileImg[i].y - 6) &&
             (jumper->y_pos + JUMPER_HEIGHT) < tileImg[i].y){
             jumper->y_pos += 1;
             jumper->down = 1;
-            return 1;
+            return 0;
         }
     }
-    return 0;
+    jumper->up = 1;
+    return 1;
 }
 
 void moveTiles(){
@@ -116,8 +120,7 @@ void controlMovement(struct Jumper *jumper){
     int  x_speed = abs(jumper->speed);
     getInput(&jumper->left, &jumper->right, &jumper->up, &jumper->down);
 
-    if((jumper->up == 1 && jumper->y_pos - jumper->speed <= WINDOW_HEIGHT - srcImg.h)
-        && !jumper->down){
+    if((jumper->up == 1) && !jumper->down){
         imgPtr = jumpImg;
         if(jumper->jumpHeight <= 0 && jumper->jumpHeight >= -8){
             jumper->speed = -(jumper->speed + 3);
