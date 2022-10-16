@@ -9,4 +9,4 @@ build/
 tmp/
 
 # Ignore vscodes folder
-.vscode/*
+.vscode/
