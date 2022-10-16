@@ -1,0 +1,12 @@
+
+# Ignore build folder
+build/
+
+# Ignore log files
+*.state
+
+# Ignore Temporary folder
+tmp/
+
+# Ignore vscodes folder
+.vscode/*

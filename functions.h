@@ -1,0 +1,16 @@
+void initialize();
+void createWindowRenderer(int width, int height);
+void setImgVariables();
+int getRandInt();
+void getInput(int *, int *, int *, int *);
+void freeSurface();
+void setTilesPos();
+void queryTexture();
+int isTilesPos(struct Jumper *jumper);
+void createSurfaceAndTexture();
+void renderFunc();
+int attachJumperToTiles(struct Jumper *jumper);
+void controlMovement(struct Jumper *);
+void moveTiles();
+void gamePlay(void);
+void closeAll();

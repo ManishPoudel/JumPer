@@ -3,8 +3,7 @@
         {
             "name": "Linux",
             "includePath": [
-                "${default}",
-                "/usr/include/SDL2"
+                "${default}"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

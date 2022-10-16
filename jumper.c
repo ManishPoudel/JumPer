@@ -2,58 +2,13 @@
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_timer.h>
-#include <SDL2/SDL_image.h>
-
-#define WINDOW_WIDTH 680
-#define WINDOW_HEIGHT 400
-#define JUMP_DISTANCE 140
-#define JUMPER_WIDTH    54
- //Since scaled down in setImgVariable()(srcImg.h/=2).
-#define JUMPER_HEIGHT   32
-
-//Main Character which jumps.
-struct Jumper{
-    int x_pos;  // Positions of jumper.
-    int y_pos;
-    int speed;  // Speed of jumper Movements.
-    int jumpHeight; //Height up to which jumper jumps.
-    int up, left, right, down;    //Control direction of jumper.
-};
-
-SDL_Window *window;
-SDL_Renderer *renderer;
-SDL_Surface *surface;
-SDL_Surface *tileSurface;
-SDL_Texture *texture;
-SDL_Texture *tileTexture;
-SDL_Rect tileImg[6];
-SDL_Rect srcImg;
-SDL_Rect standImg;
-SDL_Rect jumpImg;
-SDL_Rect imgPtr;    //Image pointer(figuratively).
+#include "sdl_vars.h"
+#include "game_vars.h"
+#include "functions.h"
 
 int track = 0;  //For error detection.
 int closeReq = 0;
 int out = 0;    //If player is out 1.
-
-void initialize();
-void createWindowRenderer(int width, int height);
-void setImgVariables();
-int getRandInt();
-void getInput(int *, int *, int *, int *);
-void freeSurface();
-void setTilesPos();
-void queryTexture();
-void createSurfaceAndTexture();
-void renderFunc();
-int attachJumperToTiles(struct Jumper *jumper);
-void controlMovement(struct Jumper *);
-void moveTiles();
-void gamePlay(void);
-void closeAll();
-
 
 int main(){
     initialize();
@@ -90,18 +45,23 @@ void gamePlay(void){
     return;
 }
 
-int attachJumperToTiles(struct Jumper *jumper){
+int isTilesPos(struct Jumper *jumper){
     for(int i = 0;i < 6;i++){
         if(jumper->x_pos + JUMPER_WIDTH >= tileImg[i].x + 2 &&
-            jumper->x_pos <= (tileImg[i].x + 62) &&
-            (jumper->y_pos + JUMPER_HEIGHT) >= (tileImg[i].y - 6) &&
-            (jumper->y_pos + JUMPER_HEIGHT) < tileImg[i].y){
-            jumper->y_pos += 1;
-            jumper->down = 1;
-            return 0;
+            jumper->x_pos <= (tileImg[i].x + 58) &&
+            (jumper->y_pos + JUMPER_HEIGHT) >= (tileImg[i].y - 8) &&
+            (jumper->y_pos + JUMPER_HEIGHT) <= tileImg[i].y){
+            return 1;
         }
     }
-    jumper->up = 1;
+    return 0;
+}
+
+int attachJumperToTiles(struct Jumper *jumper){
+    if(isTilesPos(jumper)){
+        jumper->y_pos += 1;
+        jumper->down = 1;
+    }
     return 1;
 }
 
@@ -120,7 +80,7 @@ void controlMovement(struct Jumper *jumper){
     int  x_speed = abs(jumper->speed);
     getInput(&jumper->left, &jumper->right, &jumper->up, &jumper->down);
 
-    if((jumper->up == 1) && !jumper->down){
+    if((jumper->up == 1) && !jumper->down /* && !isTilesPos(jumper) */){
         imgPtr = jumpImg;
         if(jumper->jumpHeight <= 0 && jumper->jumpHeight >= -8){
             jumper->speed = -(jumper->speed + 3);
@@ -288,6 +248,11 @@ void initialize(){
         printf("Not able to initialize window: %d\n", track++);
         return;
     }
+    // if(TTF_Init() == -1){
+    //     printf("Not able to initialize ttf:%d\n", track++);
+    //     printf("TTF_Init: %s\n", TTF_GetError());
+    //     exit(2);
+    // }
     srand((unsigned)time(NULL));
     return;
 }

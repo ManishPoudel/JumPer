@@ -5,6 +5,8 @@
         "unistd.h": "c",
         "limits": "c",
         "*.tcc": "c",
-        "sdl.h": "c"
+        "sdl.h": "c",
+        "sdl_timer.h": "c",
+        "sdl_image.h":"c"
     }
 }
