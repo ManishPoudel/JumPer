@@ -1,6 +1,6 @@
 # JumPer
 
-> ## Jump and reach to the top.
+>## Jump and reach to the top.
 
 Jumper is a game based on a simple jump game that used to ship with old cell phones.     
 
@@ -9,5 +9,5 @@ Jumper is a game based on a simple jump game that used to ship with old cell pho
 
 
 ### Tasks to do.
-* [] Better gravity algorithm.
-* [] Add Background.
+* [ ] Better gravity algorithm.
+* [ ] Add Background.
