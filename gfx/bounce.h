@@ -19,7 +19,10 @@ int bounce(float * vx, float * vy, float nx, float ny)
   float mag_nor = *vx * nx + *vy * ny;
   float norx = mag_nor * nx;
   float nory = mag_nor * ny;
-  vx -= 2 * norx;
-  vy -= 2 * nory;
+  
+  *vx -= 2 * norx;
+  *vy -= 2 * nory;
+  
+  return 0;
 }
 #endif
