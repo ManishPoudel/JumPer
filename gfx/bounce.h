@@ -14,5 +14,12 @@ int inside(int x1, int y1, int x2, int y2, int a, int b) {
     return 0;
   return 1;
 }
-
+int bounce(float * vx, float * vy, float nx, float ny)
+{
+  float mag_nor = *vx * nx + *vy * ny;
+  float norx = mag_nor * nx;
+  float nory = mag_nor * ny;
+  vx -= 2 * norx;
+  vy -= 2 * nory;
+}
 #endif
