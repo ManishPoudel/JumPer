@@ -11,11 +11,11 @@ Jumper is a game based on a simple jump game that used to ship with old cell pho
 * [ ] Manage README.md
 
 >### Tasks Sequence 
-1. [ ] basic structuring (the includes/ will be added after 2 and 3.
-1. [ ] basic gameplay with a play and exit menu.
-1. [ ] add background to the game.
-1. [ ] set up the scoring system
-1. [ ] add basic audio.
+1. basic structuring (the includes/ will be added after 2 and 3.
+1. basic gameplay with a play and exit menu.
+1. add background to the game.
+1. set up the scoring system
+1. add basic audio.
 
 
 >### Executing the game
