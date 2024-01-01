@@ -1,6 +1,6 @@
 
-# Ignore build folder
-build/
+# Ignore build folder , uncomment if to ignore the build dir
+#build/
 
 # Ignore log files
 *.state
@@ -8,5 +8,5 @@ build/
 # Ignore Temporary folder
 tmp/
 
-# Ignore vscodes folder
+# Ignore vscodes folder (all inside .vscode too).
 .vscode/
