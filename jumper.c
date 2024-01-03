@@ -1,6 +1,7 @@
-#include "gameFuncs.h"
+#include "includes/gameFuncs.h"
+#include "includes/gameVars.h"
+//#include "sdlFuncs.h"
 //For error handeling.
-int track=0;
 
 int main(){
     initialize();

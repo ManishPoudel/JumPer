@@ -1,6 +1,9 @@
-#include "sdlFuncs.h"
+#include "includes/sdlFuncs.h"
+#include "includes/gameVars.h"
 
-// I might need to put these in structure.
+
+// Declared in header for global access
+// but must be defined in .c file too
 SDL_Window *window;
 SDL_Renderer *renderer;
 SDL_Surface *surface;
@@ -12,6 +15,8 @@ SDL_Rect srcImg;
 SDL_Rect standImg;
 SDL_Rect jumpImg;
 SDL_Rect imgPtr;    //Image pointer(figuratively).
+
+
 
 void getInput(int *left, int *right, int *up, int *down,int *quitGame){
     SDL_Event event;
@@ -75,14 +80,14 @@ void createSurfaceAndTexture(){
     surface = IMG_Load("gfx/jumper.png");
     tileSurface = IMG_Load("gfx/obstacle2.png");
     if(!surface && !tileSurface){
-        printf("Not able to create surface: %d", track++);
+        printf("Not able to create surface: track 1\n");
         closeAll();
     }
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     tileTexture = SDL_CreateTextureFromSurface(renderer, tileSurface);
     freeSurface();
     if(!texture && !tileTexture){
-        printf("Not able to create texture: %d\n", track++);
+        printf("Not able to create texture: track 2\n");
         closeAll();
     }
     return;
@@ -112,14 +117,14 @@ void createWindowRenderer(int width, int height){
         width, height, SDL_WINDOW_SHOWN);
 
     if(window == NULL){
-        printf("Not able to create window: %d\n", track++);
+        printf("Not able to create window:track 3\n");
         return;
     }
     renderer = SDL_CreateRenderer(window, -1,
         SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     if(renderer == NULL){
-        printf("Not able to create Renderer: %d\n", track++);
+        printf("Not able to create Renderer:track 4");
     }
     return;
 }
@@ -127,14 +132,9 @@ void createWindowRenderer(int width, int height){
 void initialize(){
     int gotscreen = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
     if(gotscreen != 0){
-        printf("Not able to initialize window: %d\n", track++);
+        printf("Not able to initialize window: track 5\n");
         return;
     }
-    // if(TTF_Init() == -1){
-    //     printf("Not able to initialize ttf:%d\n", track++);
-    //     printf("TTF_Init: %s\n", TTF_GetError());
-    //     exit(2);
-    // }
     srand((unsigned)time(NULL));
     return;
 }

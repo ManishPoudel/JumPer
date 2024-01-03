@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-#include <time.h>
 #include "sdlFuncs.h"
 #include "gameVars.h"
+
 // Helper functions.
 void setImgVariables();
 int getRandInt();

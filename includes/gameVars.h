@@ -7,8 +7,6 @@
  //Since scaled down in setImgVariable()(srcImg.h/=2).
 #define JUMPER_HEIGHT   32
 
-extern int track ;//= 0;  //For error detection.
-
 
 //Main Character which jumps.
 struct Jumper{
