@@ -1,5 +1,5 @@
-#include "includes/gameFuncs.h"
-#include "includes/gameVars.h"
+#include "../includes/gameFuncs.h"
+#include "../includes/gameVars.h"
 //#include "sdlFuncs.h"
 //For error handeling.
 

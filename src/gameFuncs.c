@@ -1,4 +1,4 @@
-#include "includes/gameFuncs.h"
+#include "../includes/gameFuncs.h"
 
 int attachJumperToTiles(struct Jumper *jumper){
     if(isTilesPos(jumper)){

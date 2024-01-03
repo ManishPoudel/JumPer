@@ -1,5 +1,5 @@
-#include "includes/sdlFuncs.h"
-#include "includes/gameVars.h"
+#include "../includes/sdlFuncs.h"
+#include "../includes/gameVars.h"
 
 
 // Declared in header for global access
