@@ -1,6 +1,5 @@
 #include "../includes/gameFuncs.h"
 #include "../includes/gameVars.h"
-//#include "sdlFuncs.h"
 //For error handeling.
 
 int main(){
@@ -18,6 +17,7 @@ void gamePlay(void){
     createSurfaceAndTexture();
     queryTexture();
     setImgVariables();
+    setBackgndPos();
     setTilesPos();
 
     int x_pos = tileImg[1].x + 10;

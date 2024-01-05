@@ -95,3 +95,8 @@ void setTilesPos(){
     return;
 }
 
+void setBackgndPos(){
+    bgImg.x=0;
+    bgImg.y=0;
+    return;
+}
