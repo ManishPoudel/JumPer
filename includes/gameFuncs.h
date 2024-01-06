@@ -6,6 +6,7 @@
 #include "sdlFuncs.h"
 
 // Helper functions.
+void initializeGameVar();
 void setImgVariables();
 int getRandInt();
 void freeSurface();
@@ -15,6 +16,7 @@ int isTilesPos(struct Jumper *jumper);
 int attachJumperToTiles(struct Jumper *jumper);
 void controlMovement(struct Jumper *,int*);
 void moveTiles();
+void moveBackgnd();
 
 
 // For menu

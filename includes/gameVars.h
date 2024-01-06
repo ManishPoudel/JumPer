@@ -1,5 +1,6 @@
 #pragma once
 
+//pixel infor of the generated window.
 #define WINDOW_WIDTH 680
 #define WINDOW_HEIGHT 400
 #define JUMP_DISTANCE 140

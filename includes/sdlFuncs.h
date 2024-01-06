@@ -33,10 +33,11 @@ extern SDL_Rect standImg;
 extern SDL_Rect jumpImg;
 extern SDL_Rect imgPtr;    //Image pointer(figuratively).
 extern SDL_Rect bgImg;
+extern SDL_Rect bgImgPtr;   //Image pointer(figuratively).
 
 
 // Sdl functions.
-void initialize();
+void initializeSdl();
 void createWindowRenderer(int width, int height);
 void queryTexture();
 void createSurfaceAndTexture();

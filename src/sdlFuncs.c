@@ -28,6 +28,7 @@ SDL_Rect standImg;
 SDL_Rect jumpImg;
 SDL_Rect imgPtr;    //Image pointer(figuratively).
 SDL_Rect bgImg;
+SDL_Rect bgImgPtr;   //Image pointer(figuratively).
 
 
 
@@ -75,6 +76,7 @@ void getInput(int *left, int *right, int *up, int *down,int *quitGame){
 void renderFunc(){
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer,backgndTexture,NULL,&bgImg);
+    SDL_RenderCopy(renderer,backgndTexture,NULL,&bgImgPtr);
     for(int i = 0;i < 6;i++){
         SDL_RenderCopy(renderer, tileTexture, NULL, &tileImg[i]);
     }
@@ -92,7 +94,7 @@ void freeSurface(){
 }
 
 void createSurfaceAndTexture(){
-    backgndSurface= IMG_Load("gfx/background.png");
+    backgndSurface= IMG_Load("gfx/background2.png");
     jumperSurface= IMG_Load("gfx/jumper.png");
     tileSurface = IMG_Load("gfx/obstacle.png");
     if(!jumperSurface&& !tileSurface && !backgndSurface){
@@ -148,12 +150,11 @@ void createWindowRenderer(int width, int height){
     return;
 }
 
-void initialize(){
+void initializeSdl(){
     int gotscreen = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
     if(gotscreen != 0){
         printf("Not able to initialize window: track 5\n");
         return;
     }
-    srand((unsigned)time(NULL));
     return;
 }

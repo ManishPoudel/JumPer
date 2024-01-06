@@ -3,7 +3,8 @@
 //For error handeling.
 
 int main(){
-    initialize();
+    initializeSdl();
+    initializeGameVar();
     createWindowRenderer(WINDOW_WIDTH, WINDOW_HEIGHT);
     gamePlay();
     closeAll();
@@ -31,6 +32,7 @@ void gamePlay(void){
         imgPtr = standImg;
         closeReq = jumper.y_pos >= WINDOW_HEIGHT - srcImg.h;
         moveTiles();
+        moveBackgnd();
         attachJumperToTiles(&jumper);
         controlMovement(&jumper,&closeReq);
         renderFunc();

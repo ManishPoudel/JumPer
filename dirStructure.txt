@@ -1,0 +1,27 @@
+
+/src/.... contains the main source .c files
+
+/includes/....  contains the header .h files
+
+/gfx/..... contains the graphics sprites and files
+
+/reference/.... contains the reference for game
+
+
+/build/..... contains the build executable 
+                (for my personal computer ofc)
+
+/tmp/ ..... temporary test files
+
+
+files Structure
+
+jumper.c ==>> main game loop
+
+gameFuncs.c ==>> the function defination for game logic.
+                    the function used to control game
+
+sdlFuncs.c  ==>> function defination for game sdl library
+                    for generating window and objects
+
+gameVars.h  ==>>  Game definations and variables.

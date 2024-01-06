@@ -15,3 +15,15 @@ pull request. We welcome any contribution; small or big, code or no-code.**
 3. You can run the program by `make` command
 4. Make the changes you want to make
 5. **Submit a pull request**
+
+### How to learn the program structure?
+    ** see the dirStructure.txt file.
+
+
+>### Tasks Todo Sequence 
+1. basic gameplay with a play and exit menu.
+1. make moving background to the game.
+1. set up the scoring system
+1. add basic audio.
+
+

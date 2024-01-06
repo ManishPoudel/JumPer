@@ -10,6 +10,12 @@ int attachJumperToTiles(struct Jumper *jumper){
     return 1;
 }
 
+// initialize variables here if needed.
+void initializeGameVar(){
+    srand((unsigned)time(NULL));
+    return;
+}
+
 int isTilesPos(struct Jumper *jumper){
     for(int i = 0;i < 6;i++){
         if(jumper->x_pos + JUMPER_WIDTH >= tileImg[i].x + 2 &&
@@ -26,19 +32,25 @@ int isTilesPos(struct Jumper *jumper){
 void moveTiles(){
     for(int i = 0;i < 6;i++){
         tileImg[i].y = (tileImg[i].y + 1) % 400;
-        if(tileImg[i].y > WINDOW_HEIGHT + 16){
+        if(tileImg[i].y == 0){
             tileImg[i].x = getRandInt();
         }
     }
     return;
 }
 
+void moveBackgnd(){
+    bgImg.y=((bgImg.y-1)%(WINDOW_HEIGHT)) ;
+    bgImgPtr.y=(((bgImg.y)+(WINDOW_HEIGHT)));
+    return;
+}
 
+// jumping is done by this.
 void controlMovement(struct Jumper *jumper,int *quitGame){
     int  x_speed = abs(jumper->speed);
     getInput(&jumper->left, &jumper->right, &jumper->up, &jumper->down,quitGame);
 
-    if((jumper->up == 1) && !jumper->down /* && !isTilesPos(jumper) */){
+    if(jumper->up == 1 && !jumper->down /* && !isTilesPos(jumper) */){
         imgPtr = jumpImg;
         if(jumper->jumpHeight <= 0 && jumper->jumpHeight >= -8){
             jumper->speed = -(jumper->speed + 3);
@@ -88,7 +100,7 @@ void setImgVariables(){
 }
 
 void setTilesPos(){
-    for(int i = 0;i < 5;i++){
+    for(int i = 0;i < 6;i++){
         tileImg[i].x = getRandInt();
         tileImg[i].y = (i + 1) * 70;
     }
@@ -96,7 +108,10 @@ void setTilesPos(){
 }
 
 void setBackgndPos(){
+    bgImgPtr=bgImg;
     bgImg.x=0;
     bgImg.y=0;
+    bgImgPtr.x=0;
+    bgImgPtr.y=WINDOW_HEIGHT;
     return;
 }
