@@ -35,6 +35,8 @@ void gamePlay(void){
         moveBackgnd();
         attachJumperToTiles(&jumper);
         controlMovement(&jumper,&closeReq);
+        renderCopy();
+        selectMenu();
         renderFunc();
         SDL_Delay(1000 / 60);
     }

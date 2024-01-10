@@ -13,6 +13,14 @@ int attachJumperToTiles(struct Jumper *jumper){
 // initialize variables here if needed.
 void initializeGameVar(){
     srand((unsigned)time(NULL));
+    // x and y position of text.
+    destTextRect.x=100;
+    destTextRect.y=200;
+    return;
+}
+
+void selectMenu(){
+    drawMenuRect();
     return;
 }
 
