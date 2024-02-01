@@ -12,15 +12,24 @@ int attachJumperToTiles(struct Jumper *jumper){
 
 // initialize variables here if needed.
 void initializeGameVar(){
+    // for random tiles position.
     srand((unsigned)time(NULL));
-    // x and y position of text.
-    destTextRect.x=100;
-    destTextRect.y=200;
+    // "StartGame" pos
+    destTextRect[1].x=250;
+    destTextRect[1].y=180;
+    // "Exit" pos
+    destTextRect[3].x=250;
+    destTextRect[3].y=220;
     return;
 }
 
-void selectMenu(){
+void selectMenu(int *closeReq){
     drawMenuRect();
+    drawMenuTexts();
+    int up,down,enter,right,qg;
+    getInput(&enter,&right,&up,&down,closeReq);
+    drawSelectBoxMenu(enter,up,down);
+
     return;
 }
 

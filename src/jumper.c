@@ -14,6 +14,7 @@ int main(){
 //Main game play loop is this.
 void gamePlay(void){
     int closeReq=0; // if 1 then game exits.
+    int showMenu=1,gamePause=0;
     // For SDl function intializaiton.
     createSurfaceAndTexture();
     queryTexture();
@@ -28,19 +29,24 @@ void gamePlay(void){
 
     //Our Character.
     struct Jumper jumper = { x_pos,y_pos,6,JUMP_DISTANCE,0,0,0,0 };
+    
+    // Main Game Loop
     while(!closeReq){
+        if(gamePause){
+            selectMenu(&closeReq);
+        }
+        else{
         imgPtr = standImg;
-        closeReq = jumper.y_pos >= WINDOW_HEIGHT - srcImg.h;
+        gamePause = jumper.y_pos >= WINDOW_HEIGHT - srcImg.h;
         moveTiles();
         moveBackgnd();
         attachJumperToTiles(&jumper);
         controlMovement(&jumper,&closeReq);
-        renderCopy();
-        selectMenu();
+        renderCopyGamePlay();
+        }
         renderFunc();
         SDL_Delay(1000 / 60);
     }
     return;
 }
-
 //  THATS ALL.  THANK YOU!! :-D

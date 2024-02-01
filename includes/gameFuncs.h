@@ -20,7 +20,7 @@ void moveBackgnd();
 
 
 // For menu
-void selectMenu();
+void selectMenu(int *closeReq);
 
 // main gameplay in jumper.c
 void gamePlay(void);

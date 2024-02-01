@@ -16,14 +16,14 @@ SDL_Renderer *renderer;
 SDL_Surface *jumperSurface;
 SDL_Surface *backgndSurface;
 SDL_Surface *tileSurface;
-SDL_Surface *menuTextSurface;
+SDL_Surface *menuTextSurface[6];
 // texture for jumper, background and tiles.
 SDL_Texture *jumperTexture;
 SDL_Texture *backgndTexture;
 SDL_Texture *tileTexture;
-SDL_Texture *menuTextTexture;
+SDL_Texture *menuTextTexture[6];
 
-SDL_Color color3={0,0,0,255};
+SDL_Color color3={255,255,255,255};
 // for the jumping tiles, 
 // only 6 at a time is generated.
 SDL_Rect tileImg[6];
@@ -34,8 +34,9 @@ SDL_Rect imgPtr;    //Image pointer(figuratively).
 SDL_Rect bgImg;
 SDL_Rect bgImgPtr;   //Image pointer(figuratively).
 // Destination text reactangle.
-SDL_Rect destTextRect;
-
+SDL_Rect destTextRect[6];
+SDL_Rect selectBox={230,170,100,50};
+SDL_Rect *currentBox=&selectBox;
 TTF_Font *font;
 
 void getInput(int *left, int *right, int *up, int *down,int *quitGame){
@@ -49,6 +50,7 @@ void getInput(int *left, int *right, int *up, int *down,int *quitGame){
             switch(event.key.keysym.scancode){
             case SDL_SCANCODE_UP:
                 *up = 1;
+               // This is for the jumper down movement algorith. 
                 *down = 0;
                 break;
             case SDL_SCANCODE_LEFT:
@@ -56,6 +58,10 @@ void getInput(int *left, int *right, int *up, int *down,int *quitGame){
                 break;
             case SDL_SCANCODE_RIGHT:
                 *right = 1;
+                break;
+            case SDL_SCANCODE_DOWN:
+               // This is for the jumper down movement algorith. 
+                *down = 1;
                 break;
             default:
                 break;
@@ -78,7 +84,7 @@ void getInput(int *left, int *right, int *up, int *down,int *quitGame){
     }
     return;
 }
-void renderCopy(){
+void renderCopyGamePlay(){
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer,backgndTexture,NULL,&bgImg);
     SDL_RenderCopy(renderer,backgndTexture,NULL,&bgImgPtr);
@@ -95,21 +101,51 @@ void renderFunc(){
 }
 
 void drawMenuRect(){
-    SDL_Rect menuOutline={100,100,100,100};
-    SDL_Rect menuOutline2={99,99,102,102};
-    SDL_SetRenderDrawColor(renderer,0,0,0,255);
-    SDL_RenderDrawRect(renderer, &menuOutline);
-    SDL_RenderDrawRect(renderer, &menuOutline2);
-//    SDL_SetRenderDrawColor(renderer,0,0,0,255);
-    SDL_RenderCopy(renderer, menuTextTexture, NULL,&destTextRect);
-        return;
+    //Menu outline coordinates and dimensions.
+    SDL_Rect menuOutline[6]={
+        {140,90,380,250},
+        {141,91,378,248},
+        {142,92,376,246},
+        {145,95,370,240},
+        {146,96,368,238},
+        {144,94,372,242},
+    };
+    //outline coordinates,dimensions and color
+    SDL_SetRenderDrawColor(renderer,255,255,255,255);
+    for(int i=0;i<5;i++){
+        SDL_RenderDrawRect(renderer, &menuOutline[i]);
+    }
+    //Green outline coordinates,dimensions and color
+    SDL_SetRenderDrawColor(renderer,0,255,0,255);
+    SDL_RenderDrawRect(renderer, &menuOutline[5]);
+    return;
+}
+
+void drawMenuTexts(){
+//    SDL_RenderCopy(renderer, menuTextTexture[0], NULL,&destTextRect[0]);
+    SDL_RenderCopy(renderer, menuTextTexture[1], NULL,&destTextRect[1]);
+    SDL_RenderCopy(renderer, menuTextTexture[3], NULL,&destTextRect[3]);
+    return;
+}
+
+void drawSelectBoxMenu(int enterArrow,int upArrow,int downArrow){
+    if(upArrow && currentBox->y>=170){
+        currentBox->y-=60;
+    }
+    else if(downArrow && currentBox->y<=270){
+        currentBox->y+=60;
+    }
+    SDL_RenderDrawRect(renderer,currentBox);
+    return;
 }
 
 void freeSurface(){
     SDL_FreeSurface(jumperSurface);
     SDL_FreeSurface(tileSurface);
     SDL_FreeSurface(backgndSurface);
-    SDL_FreeSurface(menuTextSurface);
+    for(int i=0;i<6;i++){
+        SDL_FreeSurface(menuTextSurface[i]);
+    }
     return;
 }
 
@@ -117,21 +153,30 @@ void createSurfaceAndTexture(){
     backgndSurface= IMG_Load("gfx/background2.png");
     jumperSurface= IMG_Load("gfx/jumper.png");
     tileSurface = IMG_Load("gfx/obstacle.png");
+
     // for text rendering.
-    menuTextSurface=TTF_RenderText_Solid(font,"hello", color3);
+    menuTextSurface[0]=TTF_RenderText_Solid(font,"Play", color3);
+    menuTextSurface[1]=TTF_RenderText_Solid(font,"Start Game", color3);
+    menuTextSurface[2]=TTF_RenderText_Solid(font,"Score:", color3);
+    menuTextSurface[3]=TTF_RenderText_Solid(font,"Exit", color3);
+    // Game title in menu 
+    menuTextSurface[4]=IMG_Load("gfx/obstacle.png");
+    menuTextSurface[5]=TTF_RenderText_Solid(font,"Pause", color3);
 
     if(!jumperSurface&& !tileSurface && !backgndSurface &&
-        !menuTextSurface){
+        !menuTextSurface[3]){
         printf("Not able to create surface: track 1\n");
         closeAll();
     }
     jumperTexture= SDL_CreateTextureFromSurface(renderer, jumperSurface);
     tileTexture = SDL_CreateTextureFromSurface(renderer, tileSurface);
     backgndTexture= SDL_CreateTextureFromSurface(renderer, backgndSurface);
-    menuTextTexture=SDL_CreateTextureFromSurface(renderer, menuTextSurface);
+    for(int i=0;i<6;i++){
+        menuTextTexture[i]=SDL_CreateTextureFromSurface(renderer, menuTextSurface[i]);
+    }
     freeSurface();
     if(!jumperTexture && !tileTexture && !backgndTexture && 
-        !menuTextTexture){
+        !menuTextTexture[3]){
         printf("Not able to create texture: track 2\n");
         closeAll();
     }
@@ -145,7 +190,10 @@ void queryTexture(){
     }
     SDL_QueryTexture(jumperTexture, NULL, NULL, &srcImg.w, &srcImg.h);
     SDL_QueryTexture(backgndTexture, NULL, NULL, &bgImg.w, &bgImg.h);
-    SDL_QueryTexture(menuTextTexture, NULL, NULL, &destTextRect.w, &destTextRect.h);
+    for(int i=0;i<6;i++){
+        SDL_QueryTexture(menuTextTexture[i], NULL, NULL, 
+                         &destTextRect[i].w, &destTextRect[i].h);
+    }
     return;
 }
 
@@ -156,7 +204,9 @@ void closeAll(){
     SDL_DestroyTexture(jumperTexture);
     SDL_DestroyTexture(tileTexture);
     SDL_DestroyTexture(backgndTexture);
-    SDL_DestroyTexture(menuTextTexture);
+    for(int i=0;i<6;i++){
+        SDL_DestroyTexture(menuTextTexture[i]);
+    }
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
@@ -180,18 +230,22 @@ void createWindowRenderer(int width, int height){
     }
     return;
 }
+void sdlOpenFont(){
+    font=TTF_OpenFont("gfx/DejaVuSans.ttf", 20);
+    if(!font){
+        printf("UnableToGetFonts");
+    }
+    return;
+}
 
 void initializeSdl(){
     int gotscreen = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
     if(gotscreen != 0){
-        printf("Not able to initialize window: track 5\n");
+        printf("Not able to initialize window: track 4\n");
         return;
     }
     // Initialize SDL_ttf.
     TTF_Init();
-    font=TTF_OpenFont("gfx/DejaVuSans.ttf", 40);
-    if(!font){
-        printf("unable font");
-    }
-    return;
+    sdlOpenFont();
+        return;
 }

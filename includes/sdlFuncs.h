@@ -38,7 +38,7 @@ extern SDL_Rect jumpImg;
 extern SDL_Rect imgPtr;    //Image pointer(figuratively).
 extern SDL_Rect bgImg;
 extern SDL_Rect bgImgPtr;   //Image pointer(figuratively).
-extern SDL_Rect destTextRect;
+extern SDL_Rect destTextRect[6];
 
 
 // Sdl functions.
@@ -47,10 +47,12 @@ void createWindowRenderer(int width, int height);
 void queryTexture();
 void createSurfaceAndTexture();
 void renderFunc();
-void renderCopy();
+void renderCopyGamePlay();
 
 
 void drawMenuRect();
+void drawMenuTexts();
+void drawSelectBoxMenu(int enterArrow,int upArrow,int downArrow);
 
 void getInput(int *, int *, int *, int *,int *);
 void closeAll();
