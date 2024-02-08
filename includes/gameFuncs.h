@@ -14,7 +14,7 @@ void setTilesPos();
 void setBackgndPos();
 int isTilesPos(struct Jumper *jumper);
 int attachJumperToTiles(struct Jumper *jumper);
-void controlMovement(struct Jumper *,int*);
+void controlMovement(struct Jumper *, int *);
 void moveTiles();
 void moveBackgnd();
 

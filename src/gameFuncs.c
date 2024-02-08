@@ -14,22 +14,27 @@ int attachJumperToTiles(struct Jumper *jumper){
 void initializeGameVar(){
     // for random tiles position.
     srand((unsigned)time(NULL));
+    // For title text
+    destTextRect[0].x = 210;
+    destTextRect[0].y = 100;
     // "StartGame" pos
-    destTextRect[1].x=250;
-    destTextRect[1].y=180;
+    destTextRect[1].x = 235;
+    destTextRect[1].y = 247;
+    // "score"
+    destTextRect[2].x = 220;
+    destTextRect[2].y = 190;
     // "Exit" pos
-    destTextRect[3].x=250;
-    destTextRect[3].y=220;
+    destTextRect[3].x = 235;
+    destTextRect[3].y = 290;
     return;
 }
 
 void selectMenu(int *closeReq){
     drawMenuRect();
     drawMenuTexts();
-    int up,down,enter,right,qg;
-    getInput(&enter,&right,&up,&down,closeReq);
-    drawSelectBoxMenu(enter,up,down);
-
+    int up, down, enter, right, qg;
+    getInput(&enter, &right, &up, &down, closeReq);
+    drawSelectBoxMenu(&enter, &up, &down);
     return;
 }
 
@@ -45,7 +50,6 @@ int isTilesPos(struct Jumper *jumper){
     return 0;
 }
 
-
 void moveTiles(){
     for(int i = 0;i < 6;i++){
         tileImg[i].y = (tileImg[i].y + 1) % 400;
@@ -57,15 +61,15 @@ void moveTiles(){
 }
 
 void moveBackgnd(){
-    bgImg.y=((bgImg.y-1)%(WINDOW_HEIGHT)) ;
-    bgImgPtr.y=(((bgImg.y)+(WINDOW_HEIGHT)));
+    bgImg.y = ((bgImg.y - 1) % (WINDOW_HEIGHT));
+    bgImgPtr.y = (((bgImg.y) + (WINDOW_HEIGHT)));
     return;
 }
 
 // jumping is done by this.
-void controlMovement(struct Jumper *jumper,int *quitGame){
+void controlMovement(struct Jumper *jumper, int *quitGame){
     int  x_speed = abs(jumper->speed);
-    getInput(&jumper->left, &jumper->right, &jumper->up, &jumper->down,quitGame);
+    getInput(&jumper->left, &jumper->right, &jumper->up, &jumper->down, quitGame);
 
     if(jumper->up == 1 && !jumper->down /* && !isTilesPos(jumper) */){
         imgPtr = jumpImg;
@@ -125,10 +129,10 @@ void setTilesPos(){
 }
 
 void setBackgndPos(){
-    bgImgPtr=bgImg;
-    bgImg.x=0;
-    bgImg.y=0;
-    bgImgPtr.x=0;
-    bgImgPtr.y=WINDOW_HEIGHT;
+    bgImgPtr = bgImg;
+    bgImg.x = 0;
+    bgImg.y = 0;
+    bgImgPtr.x = 0;
+    bgImgPtr.y = WINDOW_HEIGHT;
     return;
 }
