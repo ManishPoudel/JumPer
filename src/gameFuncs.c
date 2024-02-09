@@ -30,11 +30,16 @@ void initializeGameVar(){
 }
 
 void selectMenu(int *closeReq){
+    int up, down, enter, right,optChoice=0;
     drawMenuRect();
     drawMenuTexts();
-    int up, down, enter, right, qg;
     getInput(&enter, &right, &up, &down, closeReq);
-    drawSelectBoxMenu(&enter, &up, &down);
+    drawSelectBoxMenu(&enter, &up, &down,&optChoice);
+    if(optChoice==2){
+        *closeReq=1;
+    }else if(optChoice==1){
+        *closeReq=4;
+    }
     return;
 }
 

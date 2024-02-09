@@ -137,7 +137,8 @@ void drawMenuTexts(){
     return;
 }
 
-void drawSelectBoxMenu(int *enterArrow, int *upArrow, int *downArrow){
+void drawSelectBoxMenu(int *enterArrow, int *upArrow, int *downArrow, 
+                       int *menuOptPointer){
     if(*upArrow==1 && selectBox[0].y >= 250){
         for(int i=0;i<3;i++)
             selectBox[i].y -= 45;
@@ -146,6 +147,10 @@ void drawSelectBoxMenu(int *enterArrow, int *upArrow, int *downArrow){
         for(int i=0;i<3;i++)
             selectBox[i].y += 45;
         *downArrow=0;
+    }
+    else if(*enterArrow==1){
+        *menuOptPointer=(selectBox[0].y==240)?1:2;
+        enterArrow=0;
     }
     for(int i=0;i<3;i++)
         SDL_RenderDrawRect(renderer, &selectBox[i]);

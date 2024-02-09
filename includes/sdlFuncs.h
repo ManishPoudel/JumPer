@@ -52,7 +52,8 @@ void renderCopyGamePlay();
 
 void drawMenuRect();
 void drawMenuTexts();
-void drawSelectBoxMenu(int *enterArrow, int *upArrow, int *downArrow);
+void drawSelectBoxMenu(int *enterArrow, int *upArrow, int *downArrow
+                       , int *menuOptPointer);
 
 void getInput(int *, int *, int *, int *, int *);
 void closeAll();

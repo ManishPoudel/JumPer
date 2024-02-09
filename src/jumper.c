@@ -14,7 +14,7 @@ int main(){
 //Main game play loop is this.
 void gamePlay(void){
     int closeReq = 0; // if 1 then game exits.
-    int showMenu = 1, gamePause = 0;
+    int showMenu = 1, gamePause = 1;
     // For SDl function intializaiton.
     createSurfaceAndTexture();
     queryTexture();
@@ -31,13 +31,16 @@ void gamePlay(void){
     struct Jumper jumper = { x_pos,y_pos,6,JUMP_DISTANCE,0,0,0,0 };
 
     // Main Game Loop
-    while(!closeReq){
+    while(!(closeReq==1)){
         if(gamePause){
             // in menu too we need to clear the renderer
             // and so as to mimic out of game we do not change
             // the back video positions.
             renderCopyGamePlay();
             selectMenu(&closeReq);
+            if(closeReq==4){
+                gamePause=0;
+            }
         } else{
             imgPtr = standImg;
             gamePause = jumper.y_pos >= WINDOW_HEIGHT - srcImg.h;
