@@ -13,22 +13,17 @@ int main(){
 
 //Main game play loop is this.
 void gamePlay(void){
-    int closeReq = 0; // if 1 then game exits.
-    int showMenu = 1, gamePause = 1;
+    int closeReq = 0,gamePause = 1; // if 1 then game exits.
     // For SDl function intializaiton.
+    int topTilesPos=tileImg[0].y;
     createSurfaceAndTexture();
     queryTexture();
     setImgVariables();
     setBackgndPos();
     setTilesPos();
 
-    int x_pos = tileImg[1].x + 10;
-    int y_pos = tileImg[1].y - srcImg.h;
-    srcImg.x = x_pos;
-    srcImg.y = y_pos;
-
     //Our Character.
-    struct Jumper jumper = { x_pos,y_pos,6,JUMP_DISTANCE,0,0,0,0 };
+    struct Jumper jumper = { 0,0,6,JUMP_DISTANCE,0,0,0,0 };
 
     // Main Game Loop
     while(!(closeReq==1)){
@@ -39,7 +34,21 @@ void gamePlay(void){
             renderCopyGamePlay();
             selectMenu(&closeReq);
             if(closeReq==4){
+                // restart game by placing the jumper on the top 
+                // tiles.
+                for(int x=0;x<6;x++){
+                    for(int i=0;i<6;i++){
+                        if(tileImg[i].y<topTilesPos){
+                            topTilesPos=i;
+                        }
+                    }
+                }
+                // if StartGame selected then the jumper position
+                // isis set to the top tile position.
+                jumper.x_pos=tileImg[topTilesPos].x+10;
+                jumper.y_pos=tileImg[topTilesPos].y-srcImg.h;
                 gamePause=0;
+                closeReq=0;
             }
         } else{
             imgPtr = standImg;
