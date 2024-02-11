@@ -42,6 +42,7 @@ SDL_Rect selectBox[3]={
                         { 228,238,184,44 }};
 
 TTF_Font *font;
+TTF_Font *fontScoreBoard;
 TTF_Font *titleFont;
 
 void getInput(int *left, int *right, int *up, int *down, int *quitGame){
@@ -89,6 +90,7 @@ void getInput(int *left, int *right, int *up, int *down, int *quitGame){
     }
     return;
 }
+
 void renderCopyGamePlay(){
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, backgndTexture, NULL, &bgImg);
@@ -96,6 +98,8 @@ void renderCopyGamePlay(){
     for(int i = 0;i < 6;i++){
         SDL_RenderCopy(renderer, tileTexture, NULL, &tileImg[i]);
     }
+    // for rendering score while in game.
+    SDL_RenderCopy(renderer, menuTextTexture[5], NULL, &destTextRect[5]);
     SDL_RenderCopy(renderer, jumperTexture, &imgPtr, &srcImg);
     return;
 }
@@ -130,9 +134,12 @@ void drawMenuRect(){
 
 void drawMenuTexts(){
 //    SDL_RenderCopy(renderer, menuTextTexture[0], NULL,&destTextRect[0]);
+    // "use < arrow to .." text size.
+    destTextRect[2].w = 250;
+    destTextRect[2].h = 32;
     SDL_RenderCopy(renderer, menuTextTexture[0], NULL, &destTextRect[0]);
-    SDL_RenderCopy(renderer, menuTextTexture[2], NULL, &destTextRect[2]);
     SDL_RenderCopy(renderer, menuTextTexture[1], NULL, &destTextRect[1]);
+    SDL_RenderCopy(renderer, menuTextTexture[2], NULL, &destTextRect[2]);
     SDL_RenderCopy(renderer, menuTextTexture[3], NULL, &destTextRect[3]);
     return;
 }
@@ -175,12 +182,12 @@ void createSurfaceAndTexture(){
     // for text rendering.
     menuTextSurface[0] = TTF_RenderText_Solid(titleFont, "JumPer", color3);
     menuTextSurface[1] = TTF_RenderText_Solid(font, "Start Game", color3);
-    menuTextSurface[2] = TTF_RenderText_Solid(font, "Score:", color3);
+    menuTextSurface[2] = TTF_RenderText_Solid(font, "Use < Arrow to select.", color3);
     menuTextSurface[3] = TTF_RenderText_Solid(font, "Exit", color3);
     // Game title in menu 
     menuTextSurface[4] = IMG_Load("gfx/obstacle.png");
     // make this a number render text.
-    menuTextSurface[5] = TTF_RenderText_Solid(font, "Pause", color3);
+    menuTextSurface[5] = TTF_RenderText_Solid(fontScoreBoard, "Score:", color3);
 
     if(!jumperSurface && !tileSurface && !backgndSurface &&
         !menuTextSurface[3]){
@@ -193,7 +200,9 @@ void createSurfaceAndTexture(){
     for(int i = 0;i < 6;i++){
         menuTextTexture[i] = SDL_CreateTextureFromSurface(renderer, menuTextSurface[i]);
     }
+
     freeSurface();
+
     if(!jumperTexture && !tileTexture && !backgndTexture &&
         !menuTextTexture[3]){
         printf("Not able to create texture: track 2\n");
@@ -215,7 +224,6 @@ void queryTexture(){
     }
     return;
 }
-
 
 void closeAll(){
     TTF_CloseFont(font);
@@ -249,8 +257,20 @@ void createWindowRenderer(int width, int height){
     }
     return;
 }
+
+void printScoreBoard(char *score){
+    menuTextSurface[5] = TTF_RenderText_Solid(fontScoreBoard, score, color3);
+    menuTextTexture[5] = SDL_CreateTextureFromSurface(renderer, menuTextSurface[5]);
+    SDL_FreeSurface(menuTextSurface[5]);
+    SDL_QueryTexture(menuTextTexture[5], NULL, NULL,
+        &destTextRect[5].w, &destTextRect[5].h);
+    return;
+}
+
 void sdlOpenFont(){
     font = TTF_OpenFont("gfx/gameFonts/retroGaming.ttf", 25);
+    //fontScoreBoard= TTF_OpenFont("gfx/gameFonts/retroGaming.ttf", 20);
+    fontScoreBoard= TTF_OpenFont("gfx/gameFonts/DejaVuSans.ttf", 20);
     titleFont= TTF_OpenFont("gfx/gameFonts/retroGaming.ttf", 50);
     if(!font){
         printf("UnableToGetFonts");

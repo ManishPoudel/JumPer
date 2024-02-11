@@ -16,6 +16,8 @@ void gamePlay(void){
     int closeReq = 0,gamePause = 1; // if 1 then game exits.
     // For SDl function intializaiton.
     int topTilesPos=tileImg[0].y;
+    int score=0;
+    float floatScore=0.00;
     createSurfaceAndTexture();
     queryTexture();
     setImgVariables();
@@ -47,6 +49,7 @@ void gamePlay(void){
                 // isis set to the top tile position.
                 jumper.x_pos=tileImg[topTilesPos].x+10;
                 jumper.y_pos=tileImg[topTilesPos].y-srcImg.h;
+                floatScore=0;
                 gamePause=0;
                 closeReq=0;
             }
@@ -55,7 +58,11 @@ void gamePlay(void){
             gamePause = jumper.y_pos >= WINDOW_HEIGHT - srcImg.h;
             moveTiles();
             moveBackgnd();
-            attachJumperToTiles(&jumper);
+            if(attachJumperToTiles(&jumper)){
+                floatScore+=0.03;
+                score=floatScore;
+            }
+            scoreBoard(score);
             controlMovement(&jumper, &closeReq);
             renderCopyGamePlay();
         }

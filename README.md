@@ -5,7 +5,8 @@
 Jumper is a game based on a simple jump game that used to ship with old cell phones. 
 
 >### Tasks ToDo
-* [ ] Better gravity algorithm.
+* [ ] Score board
+* [ ] Better jump.
 * [ ] Make Game smooth and fun to play
 * [ ] Manage README.md
 

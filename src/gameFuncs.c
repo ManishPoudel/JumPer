@@ -20,12 +20,15 @@ void initializeGameVar(){
     // "StartGame" pos
     destTextRect[1].x = 235;
     destTextRect[1].y = 247;
-    // "score"
+    // "use < arrow"
     destTextRect[2].x = 220;
     destTextRect[2].y = 190;
     // "Exit" pos
     destTextRect[3].x = 235;
     destTextRect[3].y = 290;
+    // for score board.
+    destTextRect[5].x = 1;
+    destTextRect[5].y = 160;
     return;
 }
 
@@ -139,5 +142,28 @@ void setBackgndPos(){
     bgImg.y = 0;
     bgImgPtr.x = 0;
     bgImgPtr.y = WINDOW_HEIGHT;
+    return;
+}
+
+void scoreBoard(int score){
+ //   int tempScore=0,i;
+ //   char scoreChar[20],tempChar;
+ //
+ //   // convert int score to char
+ //   for(i=0;score;i++){
+ //       tempScore=score%10;
+ //       score=score/10;
+ //       scoreChar[i]=tempScore+'0';
+ //   }
+ //   // reversing string since string is stored in reverse order here.
+ //   for(int z=0;z<((i)/2);z++){
+ //       tempChar=scoreChar[z];
+ //       scoreChar[z]=scoreChar[i-1-z];
+ //       scoreChar[i-1-z]=tempChar;
+ //   }
+ //   scoreChar[i]='\0';
+    char scoreChar[20];
+    sprintf(scoreChar,"Score:%d",score);
+    printScoreBoard(scoreChar);
     return;
 }
