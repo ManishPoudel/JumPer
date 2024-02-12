@@ -10,3 +10,6 @@ tmp/
 
 # Ignore vscodes folder (all inside .vscode too).
 .vscode/
+
+# Ignore reference files.
+references/
