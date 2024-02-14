@@ -2,12 +2,28 @@
 
 int attachJumperToTiles(struct Jumper *jumper){
     if(isTilesPos(jumper)){
+        //jumper->y_pos=tileImg[jumper->jumperTile].y;
         jumper->y_pos += 1;
         // This down is done to move the jumper down
         // along with the tiles.
         jumper->down = 1;
+        return 1;
     }
-    return 1;
+    return 0;
+}
+
+void playAudio(int selectAudio){
+    switch (selectAudio) {
+        case JUMP_AUDIO_OPT:
+            playJumpAudio();
+        break;
+        case GAME_END_AUDIO_OPT:
+            playGameEndAudio();
+        break;
+        default:
+        break;
+    }
+    return;
 }
 
 // initialize variables here if needed.
@@ -39,8 +55,10 @@ void selectMenu(int *closeReq){
     getInput(&enter, &right, &up, &down, closeReq);
     drawSelectBoxMenu(&enter, &up, &down,&optChoice);
     if(optChoice==2){
+        // 2 is close req
         *closeReq=1;
     }else if(optChoice==1){
+        //4 is restart
         *closeReq=4;
     }
     return;
@@ -49,9 +67,11 @@ void selectMenu(int *closeReq){
 int isTilesPos(struct Jumper *jumper){
     for(int i = 0;i < 6;i++){
         if(jumper->x_pos + JUMPER_WIDTH >= tileImg[i].x + 2 &&
-            jumper->x_pos <= (tileImg[i].x + 58) &&
-            (jumper->y_pos + JUMPER_HEIGHT) >= (tileImg[i].y - 8) &&
-            (jumper->y_pos + JUMPER_HEIGHT) <= tileImg[i].y){
+            jumper->x_pos <= (tileImg[i].x + TILE_WIDTH) &&
+            ((jumper->y_pos + JUMPER_HEIGHT) >= (tileImg[i].y -8) &&
+            (jumper->y_pos + JUMPER_HEIGHT) <= tileImg[i].y) ||
+            jumper->y_pos==tileImg[i].y){
+            jumper->jumperTile=i;
             return 1;
         }
     }
@@ -105,6 +125,7 @@ void controlMovement(struct Jumper *jumper, int *quitGame){
         jumper->x_pos -= x_speed *
             (jumper->x_pos - x_speed > srcImg.w - 38) - 1;
     }
+    // now move the jumper picture according to our entity.
     srcImg.x = jumper->x_pos;
     srcImg.y = jumper->y_pos;
     return;

@@ -17,6 +17,8 @@ void gamePlay(void){
     // For SDl function intializaiton.
     int topTilesPos=tileImg[0].y;
     int score=0;
+    // Audio play flags, better make a struct next time.
+    int playedJumpAudio,playedEndAudio=0;
     float floatScore=0.00;
     createSurfaceAndTexture();
     queryTexture();
@@ -30,9 +32,14 @@ void gamePlay(void){
     // Main Game Loop
     while(!(closeReq==1)){
         if(gamePause){
+                // play game end audio
+                if(!playedEndAudio){
+                    playAudio(GAME_END_AUDIO_OPT);
+                    playedEndAudio=1;
+                }
             // in menu too we need to clear the renderer
             // and so as to mimic out of game we do not change
-            // the back video positions.
+            // the back video positions by rendering game first.
             renderCopyGamePlay();
             selectMenu(&closeReq);
             if(closeReq==4){
@@ -53,14 +60,23 @@ void gamePlay(void){
                 gamePause=0;
                 closeReq=0;
             }
+
         } else{
             imgPtr = standImg;
             gamePause = jumper.y_pos >= WINDOW_HEIGHT - srcImg.h;
+            playedEndAudio=0;
             moveTiles();
             moveBackgnd();
             if(attachJumperToTiles(&jumper)){
                 floatScore+=0.03;
                 score=floatScore;
+                if(!playedJumpAudio){
+                    playAudio(JUMP_AUDIO_OPT);
+                    playedJumpAudio=1;
+                }
+            }
+            else {
+                playedJumpAudio=0;
             }
             scoreBoard(score);
             controlMovement(&jumper, &closeReq);

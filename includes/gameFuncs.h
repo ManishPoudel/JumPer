@@ -1,4 +1,5 @@
-#pragma once
+#ifndef game_is_on
+#define game_is_on
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -18,9 +19,11 @@ void controlMovement(struct Jumper *, int *);
 void moveTiles();
 void moveBackgnd();
 void scoreBoard(int score);
-
 // For menu
 void selectMenu(int *closeReq);
 
+void playAudio(int selectAudio);
 // main gameplay in jumper.c
 void gamePlay(void);
+
+#endif

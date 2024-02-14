@@ -1,10 +1,15 @@
 #include "../includes/sdlFuncs.h"
 #include "../includes/gameVars.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_audio.h>
+#include <SDL2/SDL_error.h>
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
+#include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 
 // I might need to put these in structure.
 // Declared in header for global access
@@ -44,6 +49,10 @@ SDL_Rect selectBox[3]={
 TTF_Font *font;
 TTF_Font *fontScoreBoard;
 TTF_Font *titleFont;
+
+// for audio.
+Mix_Chunk *wave=NULL;
+Mix_Chunk *waveGameEnd=NULL;
 
 void getInput(int *left, int *right, int *up, int *down, int *quitGame){
     SDL_Event event;
@@ -228,6 +237,10 @@ void queryTexture(){
 void closeAll(){
     TTF_CloseFont(font);
     TTF_Quit();
+    Mix_FreeChunk(wave);
+    Mix_FreeChunk(waveGameEnd);
+    Mix_CloseAudio();
+    Mix_Quit();
     SDL_DestroyTexture(jumperTexture);
     SDL_DestroyTexture(tileTexture);
     SDL_DestroyTexture(backgndTexture);
@@ -278,14 +291,45 @@ void sdlOpenFont(){
     return;
 }
 
+void sdlOpenAudio(){
+    int audioRate,audioChannel;
+    Uint16 audioFormat;
+    audioRate = MIX_DEFAULT_FREQUENCY;
+    audioFormat = MIX_DEFAULT_FORMAT;
+    audioChannel = MIX_DEFAULT_CHANNELS;
+    if(Mix_OpenAudio(audioRate,audioFormat,audioChannel,4096)<0){
+        SDL_Log("couldn't open audio: %s\n",SDL_GetError());
+        printf("audio error");
+        Mix_FreeChunk(wave);
+    }
+    else{
+        Mix_QuerySpec(&audioRate,&audioFormat,&audioChannel);
+        wave=Mix_LoadWAV("./sfx/jump.wav");
+        waveGameEnd=Mix_LoadWAV("./sfx/gameEnd.wav");
+    }
+    return;
+}
+
+void playJumpAudio(){
+    Mix_PlayChannel(MIX_DEFAULT_CHANNELS, wave,0);
+    return;
+}
+
+void playGameEndAudio(){
+    Mix_PlayChannel(MIX_DEFAULT_CHANNELS, waveGameEnd,0);
+    return;
+}
+
 void initializeSdl(){
-    int gotscreen = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
+    int gotscreen = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER |
+                             SDL_INIT_AUDIO);
     if(gotscreen != 0){
         printf("Not able to initialize window: track 4\n");
         return;
     }
     // Initialize SDL_ttf.
     TTF_Init();
+    sdlOpenAudio();
     sdlOpenFont();
     return;
 }

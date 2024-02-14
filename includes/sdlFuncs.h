@@ -1,4 +1,5 @@
-#pragma once
+#ifndef initialize_sdl
+#define initialize_sdl
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_rect.h>
@@ -54,7 +55,12 @@ void drawMenuRect();
 void drawMenuTexts();
 void drawSelectBoxMenu(int *enterArrow, int *upArrow, int *downArrow
                        , int *menuOptPointer);
-
 void printScoreBoard(char *score);
+
+void playJumpAudio();
+void playGameEndAudio();
+
 void getInput(int *, int *, int *, int *, int *);
 void closeAll();
+
+#endif
