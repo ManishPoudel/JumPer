@@ -13,3 +13,5 @@ tmp/
 
 # Ignore reference files.
 references/
+
+*.track

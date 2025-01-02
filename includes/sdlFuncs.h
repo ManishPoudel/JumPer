@@ -57,8 +57,7 @@ void drawSelectBoxMenu(int *enterArrow, int *upArrow, int *downArrow
                        , int *menuOptPointer);
 void printScoreBoard(char *score);
 
-void playJumpAudio();
-void playGameEndAudio();
+void renderAudio(int audio);
 
 void getInput(int *, int *, int *, int *, int *);
 void closeAll();

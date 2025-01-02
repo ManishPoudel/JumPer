@@ -13,23 +13,15 @@ int attachJumperToTiles(struct Jumper *jumper){
 }
 
 void playAudio(int selectAudio){
-    switch (selectAudio) {
-        case JUMP_AUDIO_OPT:
-            playJumpAudio();
-        break;
-        case GAME_END_AUDIO_OPT:
-            playGameEndAudio();
-        break;
-        default:
-        break;
-    }
-    return;
+    renderAudio(selectAudio);
+        return;
 }
 
 // initialize variables here if needed.
 void initializeGameVar(){
     // for random tiles position.
     srand((unsigned)time(NULL));
+    // For Menu texts and scores.
     // For title text
     destTextRect[0].x = 210;
     destTextRect[0].y = 100;
@@ -70,7 +62,7 @@ int isTilesPos(struct Jumper *jumper){
             jumper->x_pos <= (tileImg[i].x + TILE_WIDTH) &&
             ((jumper->y_pos + JUMPER_HEIGHT) >= (tileImg[i].y -8) &&
             (jumper->y_pos + JUMPER_HEIGHT) <= tileImg[i].y) ||
-            jumper->y_pos==tileImg[i].y){
+            jumper->y_pos==tileImg[i].y && jumper->x_pos==tileImg[i].x ){
             jumper->jumperTile=i;
             return 1;
         }
@@ -112,11 +104,9 @@ void controlMovement(struct Jumper *jumper, int *quitGame){
         jumper->jumpHeight = JUMP_DISTANCE;
     }
     if(jumper->right == 1){
-        /* if(!jumper->up){ //If you want unique x speed.
-            jumper->speed = 5;
-        } */
+        // for stopping the jumper at window width we multiply.
         jumper->x_pos += x_speed *
-            (jumper->x_pos + x_speed < WINDOW_WIDTH - srcImg.w) - 1;
+            ((jumper->x_pos + x_speed) < WINDOW_WIDTH - srcImg.w) - 1;
     }
     if(jumper->left == 1){
         /* if(!jumper->up){

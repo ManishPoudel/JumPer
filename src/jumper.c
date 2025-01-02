@@ -4,6 +4,7 @@
 
 int main(){
     initializeSdl();
+    
     initializeGameVar();
     createWindowRenderer(WINDOW_WIDTH, WINDOW_HEIGHT);
     gamePlay();
@@ -38,8 +39,8 @@ void gamePlay(void){
                     playedEndAudio=1;
                 }
             // in menu too we need to clear the renderer
-            // and so as to mimic out of game we do not change
-            // the back video positions by rendering game first.
+            // and so as to mimic out of game ,we do not change
+            // the backgnd video positions ,by rendering game first.
             renderCopyGamePlay();
             selectMenu(&closeReq);
             if(closeReq==4){
@@ -74,8 +75,7 @@ void gamePlay(void){
                     playAudio(JUMP_AUDIO_OPT);
                     playedJumpAudio=1;
                 }
-            }
-            else {
+            } else {
                 playedJumpAudio=0;
             }
             scoreBoard(score);

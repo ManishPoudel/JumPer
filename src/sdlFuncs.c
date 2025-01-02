@@ -253,24 +253,6 @@ void closeAll(){
     return;
 }
 
-void createWindowRenderer(int width, int height){
-    window = SDL_CreateWindow("JuMpeR", SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        width, height, SDL_WINDOW_SHOWN);
-
-    if(window == NULL){
-        printf("Not able to create window:track 3\n");
-        return;
-    }
-    renderer = SDL_CreateRenderer(window, -1,
-        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-
-    if(renderer == NULL){
-        printf("Not able to create Renderer:track 4");
-    }
-    return;
-}
-
 void printScoreBoard(char *score){
     menuTextSurface[5] = TTF_RenderText_Solid(fontScoreBoard, score, color3);
     menuTextTexture[5] = SDL_CreateTextureFromSurface(renderer, menuTextSurface[5]);
@@ -310,16 +292,20 @@ void sdlOpenAudio(){
     return;
 }
 
-void playJumpAudio(){
-    Mix_PlayChannel(MIX_DEFAULT_CHANNELS, wave,0);
-    return;
+void renderAudio(int audio){
+    switch (audio) {
+        case JUMP_AUDIO_OPT:
+            Mix_PlayChannel(MIX_DEFAULT_CHANNELS, wave,0);
+        break;
+        case GAME_END_AUDIO_OPT:
+            Mix_PlayChannel(MIX_DEFAULT_CHANNELS, waveGameEnd,0);
+        break;
+        default:
+        break;
+    }
 }
 
-void playGameEndAudio(){
-    Mix_PlayChannel(MIX_DEFAULT_CHANNELS, waveGameEnd,0);
-    return;
-}
-
+// --- Initialize screen ---
 void initializeSdl(){
     int gotscreen = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER |
                              SDL_INIT_AUDIO);
@@ -333,3 +319,24 @@ void initializeSdl(){
     sdlOpenFont();
     return;
 }
+
+void createWindowRenderer(int width, int height){
+    window = SDL_CreateWindow("JuMpeR", SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        width, height, SDL_WINDOW_SHOWN);
+
+    if(window == NULL){
+        printf("Not able to create window:track 3\n");
+        return;
+    }
+    renderer = SDL_CreateRenderer(window, -1,
+        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+    if(renderer == NULL){
+        printf("Not able to create Renderer:track 4");
+    }
+    return;
+}
+
+// *** Initialize screen ***
+
