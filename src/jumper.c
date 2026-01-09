@@ -1,10 +1,8 @@
 #include "../includes/gameFuncs.h"
 #include "../includes/gameVars.h"
-//For error handeling.
 
 int main(){
     initializeSdl();
-    
     initializeGameVar();
     createWindowRenderer(WINDOW_WIDTH, WINDOW_HEIGHT);
     gamePlay();
@@ -31,8 +29,8 @@ void gamePlay(void){
     struct Jumper jumper = { 0,0,6,JUMP_DISTANCE,0,0,0,0 };
 
     // Main Game Loop
-    while(!(closeReq==1)){
-        if(gamePause){
+    while(!(closeReq == 1)){
+        if(gamePause){  // if menu then this 
                 // play game end audio
                 if(!playedEndAudio){
                     playAudio(GAME_END_AUDIO_OPT);
@@ -62,7 +60,7 @@ void gamePlay(void){
                 closeReq=0;
             }
 
-        } else{
+        } else{     // if game play then this
             imgPtr = standImg;
             gamePause = jumper.y_pos >= WINDOW_HEIGHT - srcImg.h;
             playedEndAudio=0;

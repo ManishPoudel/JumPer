@@ -45,7 +45,7 @@ void selectMenu(int *closeReq){
     drawMenuRect();
     drawMenuTexts();
     getInput(&enter, &right, &up, &down, closeReq);
-    drawSelectBoxMenu(&enter, &up, &down,&optChoice);
+    drawSelectBoxMenu(&right, &up, &down,&optChoice);
     if(optChoice==2){
         // 2 is close req
         *closeReq=1;

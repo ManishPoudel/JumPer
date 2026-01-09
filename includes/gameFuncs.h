@@ -17,10 +17,13 @@ int isTilesPos(struct Jumper *jumper);
 int attachJumperToTiles(struct Jumper *jumper);
 void controlMovement(struct Jumper *, int *);
 void moveTiles();
+
 void moveBackgnd();
+
 void scoreBoard(int score);
+
 // For menu
-void selectMenu(int *closeReq);
+void selectMenu(int *closeReq); 
 
 void playAudio(int selectAudio);
 // main gameplay in jumper.c

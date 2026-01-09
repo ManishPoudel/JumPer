@@ -191,7 +191,7 @@ void createSurfaceAndTexture(){
     // for text rendering.
     menuTextSurface[0] = TTF_RenderText_Solid(titleFont, "JumPer", color3);
     menuTextSurface[1] = TTF_RenderText_Solid(font, "Start Game", color3);
-    menuTextSurface[2] = TTF_RenderText_Solid(font, "Use < Arrow to select.", color3);
+    menuTextSurface[2] = TTF_RenderText_Solid(font, "Use > Arrow to select.", color3);
     menuTextSurface[3] = TTF_RenderText_Solid(font, "Exit", color3);
     // Game title in menu 
     menuTextSurface[4] = IMG_Load("gfx/obstacle.png");
